@@ -2,7 +2,21 @@
 
 A Go port of [lolcat](https://github.com/busyloop/lolcat) 100.0.1 by Moe
 (moe@busyloop.net). It concatenates files, or standard input, to standard
-output, painted with a travelling rainbow.
+output, painted with a traveling rainbow.
+
+**Live demo** — `lolcat` runs in a browser tab as a command in
+[tuiwasm](https://0magnet.github.io/tuiwasm/)'s shell window, which registers
+it from this package. Open the shell and type:
+
+```
+toilet -f smblock hello | lolcat
+```
+
+That is a real pipeline through websh's interpreter, from
+[toilet-go](https://github.com/0magnet/toilet-go). The applet carries `-p`,
+`-F`, `-S` and `-i`, and refuses anything else rather than ignoring it —
+`--animate` in particular never returns, which in a shell would hold the
+terminal until Ctrl+C. The full CLI is the binary below.
 
 The port is **byte-exact**: for every input and option combination tested it
 produces output identical to the Ruby original.
@@ -34,7 +48,7 @@ are implemented: `-p/--spread`, `-F/--freq`, `-S/--seed`, `-a/--animate`,
 `-f/--force`, `-v/--version` and `-h/--help`. Files are read in order, `-`
 means standard input, and with no file at all it reads standard input.
 
-Like the original, it only colours when standard output is a terminal. Pipe
+Like the original, it only colors when standard output is a terminal. Pipe
 it somewhere and it copies through untouched unless you pass `-f`.
 
 ## Library
@@ -67,7 +81,7 @@ gradient and not the plumbing.
 |---|---|---|
 | Corpus × 11 option sets × 4 `COLORTERM` values | 704 | all identical |
 | Fuzz seeds 500–900 × 6 option sets × 2 `COLORTERM` values | 4,812 | all identical |
-| CLI behaviour: multiple files, `-`, `--`, bundled flags, animation, `-v`, `-h`, bad options, missing file, directory | 20 | all identical |
+| CLI behavior: multiple files, `-`, `--`, bundled flags, animation, `-v`, `-h`, bad options, missing file, directory | 20 | all identical |
 
 The corpus covers tabs, blank lines, missing trailing newlines, UTF-8, input
 that already contains SGR codes, OSC 8 hyperlinks, charset-selection escapes,
@@ -82,24 +96,24 @@ implementation are load-bearing, and getting any of them wrong changes the
 output:
 
 - The channels are rendered with `"%02X"`, and Ruby truncates a Float on the
-  way to an integer. Rounding instead shifts about half of all colours by one.
+  way to an integer. Rounding instead shifts about half of all colors by one.
 - Ruby's `String#scan` yields one extra empty match at the end of the string,
-  which Go's `FindAll` drops. That match is printed — as a colour change with
+  which Go's `FindAll` drops. That match is printed — as a color change with
   no character after it, visible at the end of every line — and it counts
   towards the offset the next line starts from.
 - Input is read in 4096-byte windows, and a line longer than one window is
   painted in pieces. The original saves and restores the offset around the
-  seam, so the colours continue across it but the following line still starts
+  seam, so the colors continue across it but the following line still starts
   where it would have.
 - A stream that ends in the middle of an escape sequence has its whole last
   buffer discarded: `printf 'hello\033[' | lolcat -f` prints nothing at all.
-- The 256-colour approximation walks a threshold upwards in steps of 42.5 to
-  decide whether a colour is grey, and divides by 256 rather than 255 for the
-  6×6×6 cube. Both are easy to "correct" into different colours.
-- Colour depth comes from `COLORTERM` alone — `truecolor` or `24bit` — and
+- The 256-color approximation walks a threshold upwards in steps of 42.5 to
+  decide whether a color is grey, and divides by 256 rather than 255 for the
+  6×6×6 cube. Both are easy to "correct" into different colors.
+- Color depth comes from `COLORTERM` alone — `truecolor` or `24bit` — and
   not from paint's fuller terminal probe, which is why lolcat is more
-  conservative than paint about 24-bit colour.
-- A tab becomes eight spaces, each of which takes its own colour, so a tab
+  conservative than paint about 24-bit color.
+- A tab becomes eight spaces, each of which takes its own color, so a tab
   advances the gradient by eight steps.
 
 ## Deliberate differences
@@ -115,12 +129,12 @@ output:
   gradient.
 - **Long options are not abbreviated.** `--spread` works, `--spr` does not.
 
-## Licence
+## License
 
 BSD 3-Clause, inherited from lolcat. See `LICENSE`.
 
 Original lolcat is copyright © 2016 Moe <moe@busyloop.net>,
-<https://github.com/busyloop/lolcat/>. This port carries that licence
+<https://github.com/busyloop/lolcat/>. This port carries that license
 unchanged; it is not relicensed.
 
 ## Dependency Graph
