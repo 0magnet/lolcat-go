@@ -5,18 +5,18 @@ import (
 	"math"
 )
 
-// Colour modes, named after the values the Ruby paint gem uses for
+// Color modes, named after the values the Ruby paint gem uses for
 // Paint.mode. lolcat only ever selects one of these two.
 const (
-	// Mode256 emits "38;5;N" indexed colour.
+	// Mode256 emits "38;5;N" indexed color.
 	Mode256 = 256
-	// ModeTrueColor emits "38;2;R;G;B" 24-bit colour.
+	// ModeTrueColor emits "38;2;R;G;B" 24-bit color.
 	ModeTrueColor = 0xffffff
 )
 
 // DetectMode reproduces lolcat's own terminal probe. Note that lolcat does
 // not use Paint.detect_mode: it looks at COLORTERM alone and falls back to
-// 256 colours, which is why lolcat is more conservative than paint is.
+// 256 colors, which is why lolcat is more conservative than paint is.
 func DetectMode(colorterm string) int {
 	if colorterm == "truecolor" || colorterm == "24bit" {
 		return ModeTrueColor
@@ -59,7 +59,7 @@ func ColorSeq(r, g, b, mode int, background bool) string {
 
 // rgbTo256 is paint's Paint.rgb_to_256, kept in its original shape because
 // the greyscale test is easy to "simplify" into something that picks a
-// different colour. sep climbs in steps of 42.5 until some channel falls
+// different color. sep climbs in steps of 42.5 until some channel falls
 // below it; the pixel is grey only if all three do.
 func rgbTo256(r, g, b int) int {
 	fr, fg, fb := float64(r), float64(g), float64(b)

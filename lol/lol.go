@@ -1,7 +1,7 @@
 // Package lol is a Go port of lolcat (https://github.com/busyloop/lolcat) by
-// moe@busyloop.net: it paints text with a travelling rainbow.
+// moe@busyloop.net: it paints text with a traveling rainbow.
 //
-// The colour of a character depends only on its position, so the whole thing
+// The color of a character depends only on its position, so the whole thing
 // is one sine per channel and a running offset. Everything else in here
 // exists to match the original byte for byte: the escape-sequence scanner
 // that lets ANSI input pass through uncoloured, the 4096-byte read window
@@ -27,7 +27,7 @@ type Options struct {
 	Duration  int     // -d, frames per line when animating
 	Speed     float64 // -s, frames per second when animating
 	Invert    bool    // -i, paint the background instead
-	Truecolor bool    // -t, force 24-bit colour
+	Truecolor bool    // -t, force 24-bit color
 
 	// OS is the rainbow offset the first line starts from. The CLI sets it
 	// from Seed. Cat resets its running offset to this for every file, which
@@ -41,11 +41,11 @@ func DefaultOptions() Options {
 }
 
 // The scanner splits input into (escape sequences, one character) pairs. Only
-// the character is coloured; the escapes are copied through untouched so that
-// already-coloured input is not mangled. Ported from Lol::ANSI_ESCAPE.
+// the character is colored; the escapes are copied through untouched so that
+// already-colored input is not mangled. Ported from Lol::ANSI_ESCAPE.
 var ansiEscape = regexp.MustCompile(`(?s)((?:\x1b(?:[ -/]+.|[\]PX^_][^\a\x1b]*|\[[0-?]*.|.))*)(.?)`)
 
-// A buffer ending in a half-read escape sequence is not safe to colour yet,
+// A buffer ending in a half-read escape sequence is not safe to color yet,
 // so Cat reads more input first. Ported from Lol::INCOMPLETE_ESCAPE; the
 // anchor is per line because Ruby's $ is a line anchor.
 var incompleteEscape = regexp.MustCompile(`(?m)\x1b(?:[ -/]*|[\]PX^_][^\a\x1b]*|\[[0-?]*)$`)
@@ -63,10 +63,10 @@ type escapedChar struct {
 //
 // Go's FindAll drops an empty match that abuts the end of the previous one,
 // while Ruby's scan keeps it, so Ruby always ends with one extra empty pair.
-// That pair is not cosmetic: it is printed (as a bare colour change) and it
+// That pair is not cosmetic: it is printed (as a bare color change) and it
 // counts towards the offset the next line starts from. Since the pattern
 // matches at every position, the matches tile the whole string, so restoring
-// Ruby's behaviour is exactly "append one empty pair unless s was empty".
+// Ruby's behavior is exactly "append one empty pair unless s was empty".
 func scan(s string) []escapedChar {
 	m := ansiEscape.FindAllStringSubmatch(s, -1)
 	out := make([]escapedChar, 0, len(m)+1)
@@ -85,7 +85,7 @@ type Cat struct {
 	Out  io.Writer
 
 	// TTY says whether Out is a terminal. When it is, Cat restores the
-	// colour, the cursor and the terminal modes as it finishes, exactly as
+	// color, the cursor and the terminal modes as it finishes, exactly as
 	// the original's ensure block does.
 	TTY bool
 
@@ -102,9 +102,9 @@ type Cat struct {
 	modeSet   bool
 }
 
-// SetMode fixes the colour mode from the -t flag and a COLORTERM value, the
+// SetMode fixes the color mode from the -t flag and a COLORTERM value, the
 // way Lol.set_mode does. Calling it is optional; Cat falls back to
-// DetectMode("") — that is, 256 colours — if the mode was never set.
+// DetectMode("") — that is, 256 colors — if the mode was never set.
 func (c *Cat) SetMode(colorterm string) {
 	if c.Opts.Truecolor {
 		c.Mode = ModeTrueColor
@@ -132,7 +132,7 @@ func (c *Cat) sleep(d time.Duration) {
 // Cat reads r to EOF and writes it painted.
 //
 // The offset restarts from Opts.OS, so calling Cat twice paints both streams
-// with the same colours — that is what lolcat does with several file
+// with the same colors — that is what lolcat does with several file
 // arguments.
 func (c *Cat) Cat(r io.Reader) error {
 	w := bufio.NewWriter(c.Out)
@@ -277,7 +277,7 @@ func (c *Cat) printlnAni(w *bufio.Writer, str string, chomped bool) {
 }
 
 // String paints s and returns the result. It is the library shortcut; the
-// colour mode is taken from opts.Truecolor alone, so pass Truecolor or call
+// color mode is taken from opts.Truecolor alone, so pass Truecolor or call
 // Cat.SetMode if you want COLORTERM consulted.
 func String(s string, opts Options) string {
 	var b strings.Builder

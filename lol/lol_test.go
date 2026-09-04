@@ -9,7 +9,7 @@ import (
 )
 
 // Every expected value in this file was captured from lolcat 100.0.1 running
-// under Ruby, so a change in the gradient, in the 256-colour rounding or in
+// under Ruby, so a change in the gradient, in the 256-color rounding or in
 // the offset bookkeeping fails the test rather than quietly redefining what
 // "correct" means.
 
@@ -48,7 +48,7 @@ func TestRainbowHex(t *testing.T) {
 
 func TestRainbowChannelsAreTruncated(t *testing.T) {
 	// The original renders the channels with "%02X", and Ruby truncates a
-	// Float on the way to an integer. Rounding instead shifts colours by one
+	// Float on the way to an integer. Rounding instead shifts colors by one
 	// on roughly half of all positions, so this pins the direction.
 	// Green at i=0 is 237.98, which Ruby renders as ED, not EE.
 	if _, g, _ := Rainbow(0.1, 0); g != 0xED {
@@ -169,7 +169,7 @@ func TestTabsBecomeEightSpaces(t *testing.T) {
 	if strings.Contains(got, "\t") {
 		t.Fatal("tab survived")
 	}
-	// Each of the eight spaces gets its own colour, so the tab advances the
+	// Each of the eight spaces gets its own color, so the tab advances the
 	// gradient by eight steps rather than one.
 	want := "\x1b[38;2;153;223;7ma\x1b[39m\x1b[38;2;157;220;6m \x1b[39m" +
 		"\x1b[38;2;161;217;5m \x1b[39m\x1b[38;2;165;214;4m \x1b[39m" +
@@ -183,7 +183,7 @@ func TestTabsBecomeEightSpaces(t *testing.T) {
 }
 
 func TestExistingEscapesPassThrough(t *testing.T) {
-	// The input's own SGR codes are copied out ahead of the rainbow colour,
+	// The input's own SGR codes are copied out ahead of the rainbow color,
 	// and they do not consume a gradient step.
 	got := String("\x1b[31mR\x1b[0m\n", opts(1, func(o *Options) { o.Truecolor = true }))
 	want := "\x1b[31m\x1b[38;2;153;223;7mR\x1b[39m" +
@@ -215,7 +215,7 @@ func TestNoTrailingNewline(t *testing.T) {
 }
 
 func TestBlankLineStillEmitsAColour(t *testing.T) {
-	// An empty line is one empty match, which prints a bare colour change.
+	// An empty line is one empty match, which prints a bare color change.
 	got := String("\n", opts(1, func(o *Options) { o.Truecolor = true }))
 	want := "\x1b[38;2;153;223;7m\x1b[39m\n"
 	if got != want {
@@ -238,7 +238,7 @@ func TestIncompleteEscapeAtEOFIsDropped(t *testing.T) {
 
 func TestGradientRestartsPerStream(t *testing.T) {
 	// lolcat resets the offset for every file argument, so two files get the
-	// same colours rather than a continuous rainbow.
+	// same colors rather than a continuous rainbow.
 	a := String("hello\n", opts(42))
 	b := String("hello\n", opts(42))
 	if a != b {
