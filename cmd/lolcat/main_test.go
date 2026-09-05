@@ -87,7 +87,7 @@ func TestParseLongAndShortForms(t *testing.T) {
 			if code >= 0 {
 				t.Fatalf("parse stopped with code %d", code)
 			}
-			_ = c.check(o, force, files)
+			c.check(o, force, files) //nolint:errcheck,gosec // the case asserts internally; its return is not the subject
 		})
 	}
 }
@@ -95,9 +95,12 @@ func TestParseLongAndShortForms(t *testing.T) {
 func TestParseRejectsBadValues(t *testing.T) {
 	// die writes to stderr; keep the test output clean.
 	old := os.Stderr
-	devnull, _ := os.Open(os.DevNull)
+	devnull, err := os.Open(os.DevNull)
+	if err != nil {
+		t.Fatalf("open %s: %v", os.DevNull, err)
+	}
 	os.Stderr = devnull
-	defer func() { os.Stderr = old; devnull.Close() }()
+	defer func() { os.Stderr = old; devnull.Close() }() //nolint:errcheck,gosec
 
 	for _, argv := range [][]string{
 		{"-p", "abc"},

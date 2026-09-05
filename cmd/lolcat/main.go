@@ -88,7 +88,8 @@ func run(argv []string) int {
 
 	opts.OS = float64(opts.Seed)
 	if opts.OS == 0 {
-		opts.OS = float64(rand.Intn(256))
+		// Colors, not secrets: a predictable rainbow offset is the feature.
+		opts.OS = float64(rand.Intn(256)) //nolint:gosec
 	}
 
 	stdoutTTY := isTTY(os.Stdout)
@@ -104,7 +105,7 @@ func run(argv []string) int {
 	go func() {
 		<-interrupted
 		if stdoutTTY {
-			os.Stdout.WriteString("\x1b[m\x1b[?25h\x1b[?1;5;2004l")
+			os.Stdout.WriteString("\x1b[m\x1b[?25h\x1b[?1;5;2004l") //nolint:errcheck,gosec
 		}
 		os.Exit(0)
 	}()
@@ -113,17 +114,18 @@ func run(argv []string) int {
 		in := io.Reader(os.Stdin)
 		inTTY := isTTY(os.Stdin)
 		if name != "-" {
-			f, err := os.Open(name)
+			// Opening the file named on the command line is the whole job.
+			f, err := os.Open(name) //nolint:gosec
 			if err != nil {
 				fmt.Println(openError(name, err))
 				return 1
 			}
 			if st, serr := f.Stat(); serr == nil && st.IsDir() {
-				f.Close()
+				f.Close() //nolint:errcheck,gosec
 				fmt.Printf("lolcat: %s: Is a directory\n", name)
 				return 1
 			}
-			defer f.Close()
+			defer f.Close() //nolint:errcheck,gosec
 			in, inTTY = f, false
 		}
 
@@ -144,7 +146,7 @@ func run(argv []string) int {
 			for {
 				line, err := br()
 				if line != "" {
-					os.Stdout.WriteString(line)
+					os.Stdout.WriteString(line) //nolint:errcheck,gosec
 				}
 				if err != nil {
 					break
@@ -310,11 +312,11 @@ func showHelp() int {
 		Freq:     0.3,
 		Duration: 12,
 		Speed:    20.0,
-		OS:       rand.Float64() * 8192,
+		OS:       rand.Float64() * 8192, //nolint:gosec // colors, not secrets
 	}
 	c := &lol.Cat{Opts: opts, Out: os.Stdout, TTY: isTTY(os.Stdout)}
 	c.SetMode(os.Getenv("COLORTERM"))
-	_ = c.Cat(strings.NewReader(helpText))
+	c.Cat(strings.NewReader(helpText)) //nolint:errcheck,gosec // help text to stdout; a failure here has nowhere to go
 	fmt.Println()
 	return 1
 }
