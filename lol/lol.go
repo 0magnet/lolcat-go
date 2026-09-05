@@ -4,7 +4,7 @@
 // The color of a character depends only on its position, so the whole thing
 // is one sine per channel and a running offset. Everything else in here
 // exists to match the original byte for byte: the escape-sequence scanner
-// that lets ANSI input pass through uncoloured, the 4096-byte read window
+// that lets ANSI input pass through uncolored, the 4096-byte read window
 // that the offset bookkeeping is built around, and paint's rounding.
 package lol
 
@@ -203,7 +203,7 @@ func lines(s string) []string {
 	return out
 }
 
-// Println paints one line. A trailing newline is honoured; a line without one
+// Println paints one line. A trailing newline is honored; a line without one
 // leaves the offset advanced so that the continuation lines up.
 func (c *Cat) Println(line string) {
 	w := bufio.NewWriter(c.Out)

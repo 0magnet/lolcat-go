@@ -336,7 +336,7 @@ func isTTY(f *os.File) bool {
 }
 
 // newLineReader returns a function yielding one line at a time, used for the
-// uncoloured passthrough of a terminal.
+// uncolored passthrough of a terminal.
 func newLineReader(r io.Reader) func() (string, error) {
 	buf := make([]byte, 1)
 	var sb strings.Builder
