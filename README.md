@@ -5,7 +5,7 @@ A Go port of [lolcat](https://github.com/busyloop/lolcat) 100.0.1 by Moe
 output, painted with a traveling rainbow.
 
 **Live demo** — `lolcat` runs in a browser tab as a command in
-[tuiwasm](https://0magnet.github.io/tuiwasm/)'s shell window, which registers
+[tuiwasm](https://tuiwasm.magnetosphere.net/)'s shell window, which registers
 it from this package. Open the shell and type:
 
 ```
